@@ -1,22 +1,22 @@
-from BoardHelper import *
 from HitorySolver import *
+from board import Board
+from huepy import *
 
 
 def main():
-    print(hue.bold("Hitory solver"))
-    print(hue.cyan("Мы очень устали:("))
-    print(hue.lcyan("Но ждем доску!"))
-    board = input_board()
-    show(board)
+    print(bold(green("Hitory solver")))
+    print()
+    board = Board()
+    board.show()
 
     while True:
-        print(hue.bold('Чем могу помочь?: выход, подсказка, решение | '), end='')
+        print(bold('Чем могу помочь?: выход, подсказка, решение | '), end='')
         action = input().strip()
         if action == 'выход':
             break
         if action == 'подсказка':
             board = hint(board)
-            show(board)
+            board.show()
             continue
 
         if action == 'решение':  # repeatedly try hint and smart-mark board
