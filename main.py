@@ -1,6 +1,7 @@
 from HitorySolver import *
 import pygame as pg
 from button import Button
+from random import randint
 
 
 def main():
@@ -9,8 +10,10 @@ def main():
     clock = pg.time.Clock()
     s_b = Button((50, 500), 150, 50, 'Решить', (75, 510), 40)
     h_b = Button((400, 500), 180, 50, 'Подсказать', (410, 510), 40)
+    r_b = Button((223, 480), 150, 50, 'Рандом', (243, 490), 40)
+    l_b = Button((223, 540), 150, 50, 'Загрузить', (230, 550), 40)
 
-    board = input_board()
+    board = [[(-1, 0)]]
     run = True
     while run:
         clock.tick(60)
@@ -23,12 +26,20 @@ def main():
                     board = solve(board)
                 elif h_b.in_boards(mouse_pos):
                     board = hint(board)
+                elif r_b.in_boards(mouse_pos):
+                    board = random_board()
+                elif l_b.in_boards(mouse_pos):
+                    board = input_board()
         screen.fill((255, 255, 255))
         draw_board(screen, board)
         s_b.draw(screen)
         s_b.highlight(mouse_pos)
         h_b.draw(screen)
         h_b.highlight(mouse_pos)
+        r_b.draw(screen)
+        r_b.highlight(mouse_pos)
+        l_b.draw(screen)
+        l_b.highlight(mouse_pos)
         pg.display.flip()
 
 
@@ -88,7 +99,41 @@ def input_board():
         with open('input.txt', 'r') as f:
             for line in f.readlines():
                 board.append([(int(s), 0) for s in line.strip().split()])
+    check_board(board)
     return board
+
+
+def random_board():
+    w = randint(4, 11)
+    while True:
+        board = []
+        try:
+            for i in range(w):
+                board.append([(randint(1, 10), 0) for _ in range(w)])
+            check_board(board)
+            return board
+        except:
+            continue
+    return board
+
+
+def check_board(board):
+    n = len(board)
+    for row in board:
+        sum = 0
+        for cell, cl in row:
+            sum += cell
+        if 1 * n < sum < n**2:
+            continue
+        raise ValueError('Сумма чисел в строках некорректна')
+    for i in range(n):
+        summ = 0
+        for row in board:
+            cell, cl = row[i]
+            summ += cell
+        if 1 * n < summ < n**2:
+            continue
+        raise ValueError('Сумма чисел в столбцах некорректна')
 
 
 if __name__ == '__main__':
